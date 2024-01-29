@@ -1,118 +1,128 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
+
+import React, { useState } from 'react';
+import type { PropsWithChildren } from 'react';
 import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
-  useColorScheme,
   View,
+  ImageSourcePropType,
+  Image,
+  Pressable,
 } from 'react-native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import DiceOne from './assets/One.png'
+import DiceTwo from './assets/Two.png'
+import DiceThree from './assets/Three.png'
+import DiceFour from './assets/Four.png'
+import DiceFive from './assets/Five.png'
+import DiceSix from './assets/Six.png'
+import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+const options = {
+  enableVibrateFallback: true,
+  ignoreAndroidSystemSettings: false,
+};
+
+
+
+type DiceProps = PropsWithChildren<{
+  imageUrl: ImageSourcePropType
+}>
+
+const Dice = ({ imageUrl }: DiceProps): JSX.Element => {
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
+    <View>
+      <Image
+        style={styles.diceImage}
+        source={imageUrl}
+      />
     </View>
-  );
+  )
+
 }
 
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+function App(): JSX.Element {
+  const [diceImage, setDiceImage] = useState<ImageSourcePropType>(DiceOne)
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+  const rollDiceOnTop = () => {
+
+    let randomNumber = Math.floor(Math.random() * 6) + 1
+
+    switch (randomNumber) {
+      case 1:
+        setDiceImage(DiceOne)
+        break;
+      case 2:
+        setDiceImage(DiceTwo)
+        break;
+      case 3:
+        setDiceImage(DiceThree)
+        break;
+      case 4:
+        setDiceImage(DiceFour)
+        break;
+      case 5:
+        setDiceImage(DiceFive)
+        break;
+      case 6:
+        setDiceImage(DiceSix)
+        break;
+
+      default:
+        setDiceImage(DiceOne)
+        break;
+    }
+ ReactNativeHapticFeedback.trigger("impactLight", options);
+ 
+  }
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <View style={styles.container}>
+      <Dice imageUrl={diceImage} />
+      <Pressable 
+      style={styles.button}
+      onPress={rollDiceOnTop}
+      > 
+        <Text style={styles.rollDiceBtnText}>
+          Roll the Dice
+        </Text>
+      </Pressable>
+    </View>
+
   );
 }
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFED86',
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
+  diceContainer: {
+    margin: 12,
   },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
+  diceImage: {
+    width: 200,
+    height: 200,
   },
-  highlight: {
+  rollDiceBtnText: {
+    paddingVertical: 10,
+    paddingHorizontal: 40,
+    borderWidth: 2,
+    borderRadius: 8,
+    borderColor: '#E5E0FF',
+    fontSize: 16,
+    color: 'white',
     fontWeight: '700',
+    textTransform: 'uppercase',
   },
+  button:{
+   backgroundColor:'orange',
+   borderRadius:10
+  }
 });
 
 export default App;
